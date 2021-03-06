@@ -1,8 +1,7 @@
 
 
+
 # home-assistant-palazzetti
-## Description
-Definitive Palazzetti SmartStoves integration for Home Assistant
 
 [![GitHub Release][releases-shield]][releases]
 [![GitHub Activity][commits-shield]][commits]
@@ -18,6 +17,8 @@ Definitive Palazzetti SmartStoves integration for Home Assistant
 [![Discord][discord-shield]][discord]
 [![Community Forum][forum-shield]][forum]
 
+## Description
+Definitive Palazzetti SmartStoves integration for Home Assistant
 
 **This component will set up the following platforms.**
 
@@ -29,7 +30,11 @@ Definitive Palazzetti SmartStoves integration for Home Assistant
 | `switch`        | Switch something `ON` or `OFF`.                                           |
 | `cover`         | For fireplaces with automatic door to `Open` or `Close`.                  |
 
-![screenshot][exampleimg]
+| Screen | Product type |
+|-----------|-----------|
+| ![screenshot boiler][exampleimg_boiler] | JP21 Boiler             |
+| ![screenshot stove][exampleimg_stove]   | Air Pro3 Stove     |
+| ![screenshot WT][exampleimg_wt]         | Monoblocco WT Plus |
 
 ## Installation
 
@@ -82,7 +87,9 @@ Readme template was mainly taken from [@Ludeeus](https://github.com/ludeeus)'s [
 [hacsbadge]: https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge
 [discord]: https://discord.gg/Qa5fW2R
 [discord-shield]: https://img.shields.io/discord/330944238910963714.svg?style=for-the-badge
-[exampleimg]: example_palazzetti.png
+[exampleimg_boiler]: example_boiler.png
+[exampleimg_stove]: example_stove.png
+[exampleimg_wt]: example_wt.png
 [forum-shield]: https://img.shields.io/badge/community-forum-brightgreen.svg?style=for-the-badge
 [forum]: https://community.home-assistant.io/
 [license-shield]: https://img.shields.io/github/license/marcopal74/home-assistant-palazzetti.svg?style=for-the-badge
