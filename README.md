@@ -24,15 +24,15 @@ Definitive Palazzetti SmartStoves integration for Home Assistant
 
 | Platform        | Description                                                               |
 | --------------- | ------------------------------------------------------------------------- |
-| `binary_sensor` | To show the state of the CBox or BioCC: `Connected` or `Disconnected`.        |
-| `sensor`        | Show info from product like `temperatures`, `pellet consumption`, etc.        |
+| `binary_sensor` | To show the state of the CBox or BioCC: `Connected` or `Disconnected`.    |
+| `sensor`        | Show info from product like `temperatures`, `pellet consumption`, etc.    |
 | `input_number`  | To set target `setpoint` or fan `speed` or maximum allowed `power level`. |
 | `switch`        | Switch something `ON` or `OFF`.                                           |
 | `cover`         | For fireplaces with automatic door to `Open` or `Close`.                  |
 
 | Screen | Product type |
 |-----------|-----------|
-| ![screenshot boiler][exampleimg_boiler] | JP21 Boiler             |
+| ![screenshot boiler][exampleimg_boiler] | JP21 Boiler        |
 | ![screenshot stove][exampleimg_stove]   | Air Pro3 Stove     |
 | ![screenshot WT][exampleimg_wt]         | Monoblocco WT Plus |
 
