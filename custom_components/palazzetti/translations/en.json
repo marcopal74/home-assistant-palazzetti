@@ -1,0 +1,27 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "data": {
+                    "host": "IP of the Connection Box"
+                },
+                "title": "Palazzetti Stove",
+                "description": "Insert CBOX IP address"
+            }
+        },
+        "error": {
+            "cannot_connect": "The Connbox IP is not responding",
+            "invalid_sn": "The embedded Serial Number is not valid"
+        },
+        "abort": {
+            "cannot_connect": "IP not corresponding to a ConnectionBox",
+            "host_exists": "ConnBox already configured"
+        }
+    },
+    "device_automation": {
+        "trigger_type": {
+            "turned_off": "{entity_name} turned off",
+            "error_on": "{entity_name} error state"
+        }
+    }
+}

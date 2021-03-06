@@ -1,0 +1,12 @@
+set_setpoint:
+  description: >
+    Imposta il setpoint al valore desiderato, scelgliere l'entità "sensor.my_stove_name" desiderata
+  fields:
+    entity_id:
+      description: >
+        scegli l'entità sensor.my_stove_name
+      example: sensor.my_stove_name
+    value:
+      description: >
+        imposta il setpoint desiderato in gradi Celsius
+      example: 20

@@ -1,0 +1,27 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "data": {
+                    "host": "IP ConnBox"
+                },
+                "title": "Palazzetti Stove",
+                "description": "Inserire l'IP della ConnBox"
+            }
+        },
+        "error": {
+            "cannot_connect": "La ConnBox non risponde",
+            "invalid_sn": "Il Serial Number letto dalla scheda non è valido"
+        },
+        "abort": {
+            "cannot_connect": "l'IP inserito non corrisponde ad una Connection Box",
+            "host_exists": "ConnBox già configurata"
+        }
+    },
+    "device_automation": {
+        "trigger_type": {
+            "turned_off": "{entity_name} spento",
+            "error_on": "{entity_name} in errore"
+        }
+    }
+}
