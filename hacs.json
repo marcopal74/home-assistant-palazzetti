@@ -1,0 +1,6 @@
+{
+  "name": "Palazzetti",
+  "domains": ["binary_sensor", "sensor", "switch","input_number","cover"  ],
+  "iot_class": "Local Polling",
+  "homeassistant": "0.118.0"
+}

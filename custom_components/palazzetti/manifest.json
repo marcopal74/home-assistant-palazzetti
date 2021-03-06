@@ -2,10 +2,8 @@
   "domain": "palazzetti",
   "name": "Palazzetti",
   "config_flow": true,
-  "documentation": "https://github.com/marcopal74/hass-palazzetti",
+  "documentation": "https://github.com/marcopal74/home-assistant-palazzetti",
   "dependencies": [],
-  "codeowners": [
-      "@marcopal74"
-  ],
+  "codeowners": ["@marcopal74"],
   "requirements": ["palazzetti-sdk-local-api>=1.0.11"]
 }
