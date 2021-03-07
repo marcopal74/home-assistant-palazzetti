@@ -1,7 +1,7 @@
 {
   "domain": "palazzetti",
   "name": "Palazzetti",
-  "version": "0.0.1"
+  "version": "0.0.1",
   "config_flow": true,
   "documentation": "https://github.com/marcopal74/home-assistant-palazzetti",
   "dependencies": [],
