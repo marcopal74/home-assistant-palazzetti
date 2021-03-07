@@ -54,13 +54,19 @@ async def async_keep_alive(hass: HomeAssistant, entry: ConfigEntry):
     await myhub.async_update(deep=False)
 
     if myhub.hub_online:
-        if myhub.product_online:
-            print("IP now reachable and product is online")
+        if myhub.product_online and myhub.product:
+            print("Hub IP reachable and product is online")
+            _LOGGER.warning(
+                "Hub IP %s reachable and product online", entry.data["host"]
+            )
             await hass.config_entries.async_reload(entry.entry_id)
         else:
-            print("IP now reachable but product offline")
+            print("Hub IP reachable but product offline")
+            _LOGGER.warning(
+                "Hub IP %s reachable but product offline", entry.data["host"]
+            )
     else:
-        print("IP still not reachable")
+        print(f"Hub IP {entry.data['host']} not reachable")
 
 
 async def async_upd_alls(hass: HomeAssistant, entry: ConfigEntry):
@@ -151,7 +157,7 @@ async def async_setup(hass: HomeAssistant, config: dict):
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     _LOGGER.debug("Init of palazzetti component")
-    print("Lancia async_setup_entry")
+    print("Init of palazzetti component")
     # check and remove keep alive loop data
     kalive_key = entry.entry_id + "_listener_kalive"
     if kalive_key in hass.data[DOMAIN]:
@@ -172,9 +178,25 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         hass.config_entries.async_forward_entry_setup(entry, "binary_sensor")
     )
 
-    if (not myhub.online) or (not myhub.product_online):
-        print("IP is unreachable or product offline")
-
+    if (
+        (not myhub.online)
+        or (not myhub.product_online)
+        or (not myhub.product)
+        or (not myhub.product.online)
+    ):
+        if not myhub.online:
+            print("Hub IP is unreachable or product offline")
+            _LOGGER.warning("Hub IP %s not reachable", entry.data["host"])
+        else:
+            if (
+                (not myhub.product_online)
+                or (not myhub.product)
+                or (not myhub.product.online)
+            ):
+                print("IP is reachable but product offline")
+                _LOGGER.warning(
+                    "Hub IP %s reachable but product offline", entry.data["host"]
+                )
         # keep alive loop until ip is reachable
         def keep_alive(event_time):
             return asyncio.run_coroutine_threadsafe(
@@ -186,7 +208,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         hass.data[DOMAIN][entry.entry_id + "_listener_kalive"] = listener_kalive
         return True
 
-    print("IP is reachable and product is online")
+    print("Hub IP is reachable and product is online")
 
     # loop for get dynamic data of stove
     def update_state_datas(event_time):

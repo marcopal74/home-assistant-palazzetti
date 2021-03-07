@@ -19,7 +19,7 @@ async def validate_input(_user_host):
     myconfig = {"hub_id": myhub.hub_id, "host": _user_host}
 
     # connect to get Hub data
-    await myhub.async_update()
+    await myhub.async_update(deep=True)
     if myhub.online:
         myconfig["hub_isbiocc"] = myhub.hub_isbiocc
         myconfig["label"] = myhub.label

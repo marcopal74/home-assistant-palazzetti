@@ -1,24 +1,26 @@
 from homeassistant.components.input_number import InputNumber
 import voluptuous as vol
+import logging
 from .const import DOMAIN
 from .helper import get_platform
 
+_LOGGER = logging.getLogger(__name__)
 
-async def create_input_number(hass, entry):
-    # _config = entry.data["stove"]
-    _config = None
-    product = None
-    try:
-        product = hass.data[DOMAIN][entry.entry_id].product
-        _config = product.get_data_config_json()
-    except:
-        pass
-    my_sliders = []
+
+async def create_input_number(hass, config_entry):
+    myhub = hass.data[DOMAIN][config_entry.entry_id]
+    product = myhub.product
+    if not product.online:
+        return
+
+    _config = product.get_data_config_json()
+
+    entity_list = []
 
     # slider impostazione potenza
     if _config["_flag_has_power"]:
         data = {
-            "id": f"{entry.unique_id}_pwr",
+            "id": f"{config_entry.unique_id}_pwr",
             "initial": _config["_value_power"],
             "max": 5.0,
             "min": 1.0,
@@ -27,13 +29,13 @@ async def create_input_number(hass, entry):
             "step": 1.0,
             "icon": "mdi:fire",
         }
-        slider_power = MyNumber(hass, data, product, "power", entry.unique_id)
-        my_sliders.append(slider_power)
+        slider_power = MyNumber(hass, data, product, "power", config_entry.unique_id)
+        entity_list.append(slider_power)
 
     # slider impostazione setpoint
     if _config["_flag_has_setpoint"]:
         data2 = {
-            "id": f"{entry.unique_id}_setpoint",
+            "id": f"{config_entry.unique_id}_setpoint",
             "initial": _config["_value_setpoint"],
             "max": _config["_value_setpoint_max"],
             "min": _config["_value_setpoint_min"],
@@ -43,14 +45,16 @@ async def create_input_number(hass, entry):
             "step": 1.0,
             "icon": "hass:thermometer",
         }
-        slider_setpoint = MyNumber(hass, data2, product, "setpoint", entry.unique_id)
-        my_sliders.append(slider_setpoint)
+        slider_setpoint = MyNumber(
+            hass, data2, product, "setpoint", config_entry.unique_id
+        )
+        entity_list.append(slider_setpoint)
 
     # slider impostazione ventilatore principale
     if _config["_flag_has_fan_main"]:
         fan = 1
         data3 = {
-            "id": f"{entry.unique_id}_fan1",
+            "id": f"{config_entry.unique_id}_fan1",
             "initial": _config["_value_fan_main"],
             "max": _config["_value_fan_limits"][(((fan - 1) * 2) + 1)],
             "min": _config["_value_fan_limits"][((fan - 1) * 2)],
@@ -59,14 +63,14 @@ async def create_input_number(hass, entry):
             "step": 1.0,
             "icon": "mdi:fan",
         }
-        slider_fan1 = MyNumber(hass, data3, product, "fan1", entry.unique_id)
-        my_sliders.append(slider_fan1)
+        slider_fan1 = MyNumber(hass, data3, product, "fan1", config_entry.unique_id)
+        entity_list.append(slider_fan1)
 
     # slider impostazione secondo ventilatore
     if _config["_flag_has_fan_second"]:
         fan = 2
         data4 = {
-            "id": f"{entry.unique_id}_fan2",
+            "id": f"{config_entry.unique_id}_fan2",
             "initial": _config["_value_fan_second"],
             "max": _config["_value_fan_limits"][(((fan - 1) * 2) + 1)],
             "min": _config["_value_fan_limits"][((fan - 1) * 2)],
@@ -75,14 +79,14 @@ async def create_input_number(hass, entry):
             "step": 1.0,
             "icon": "mdi:fan-speed-2",
         }
-        slider_fan2 = MyNumber(hass, data4, product, "fan2", entry.unique_id)
-        my_sliders.append(slider_fan2)
+        slider_fan2 = MyNumber(hass, data4, product, "fan2", config_entry.unique_id)
+        entity_list.append(slider_fan2)
 
     # slider impostazione terzo ventilatore
     if _config["_flag_has_fan_third"]:
         fan = 3
         data5 = {
-            "id": f"{entry.unique_id}_fan3",
+            "id": f"{config_entry.unique_id}_fan3",
             "initial": _config["_value_fan_third"],
             "max": _config["_value_fan_limits"][(((fan - 1) * 2) + 1)],
             "min": _config["_value_fan_limits"][((fan - 1) * 2)],
@@ -91,21 +95,21 @@ async def create_input_number(hass, entry):
             "step": 1.0,
             "icon": "mdi:fan-speed-3",
         }
-        slider_fan3 = MyNumber(hass, data5, product, "fan3", entry.unique_id)
-        my_sliders.append(slider_fan3)
+        slider_fan3 = MyNumber(hass, data5, product, "fan3", config_entry.unique_id)
+        entity_list.append(slider_fan3)
 
     # if no sliders exit
-    if not my_sliders:
+    if not entity_list:
         return
 
     # apro la piattaforma degli slider: input_number
     platform_name = "input_number"
     input_number_platform = get_platform(hass, platform_name)
     # aggiungo la config_entry alla platform così posso agganciarla ai device
-    input_number_platform.config_entry = entry
+    input_number_platform.config_entry = config_entry
 
     # aggiunge gli slider alla platform caricata
-    await input_number_platform.async_add_entities(my_sliders, True)
+    await input_number_platform.async_add_entities(entity_list, True)
 
 
 async def unload_input_number(hass, entry) -> None:
