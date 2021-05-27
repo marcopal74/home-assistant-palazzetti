@@ -1,0 +1,27 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "data": {
+                    "host": "IP de la boîte de connexion"
+                },
+                "title": "Poële Palazzetti",
+                "description": "Insérer l'adresse IP de la boîte de connexion"
+            }
+        },
+        "error": {
+            "cannot_connect": "L'IP de la Connbox ne répond pas",
+            "invalid_sn": "Le numéro de série intégré n'est pas valide"
+        },
+        "abort": {
+            "cannot_connect": "L'IP ne correspondant pas à une ConnectionBox",
+            "host_exists": "ConnBox déjà configuré"
+        }
+    },
+    "device_automation": {
+        "trigger_type": {
+            "turned_off": "{entity_name} désactivée",
+            "error_on": "{entity_name} état d'erreur"
+        }
+    }
+}
