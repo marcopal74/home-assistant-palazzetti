@@ -51,6 +51,7 @@ Using your HA configuration directory (folder) as a starting point you should no
 ```text
 custom_components/palazzetti/translations/en.json
 custom_components/palazzetti/translations/it.json
+custom_components/palazzetti/translations/fr.json
 custom_components/palazzetti/__init__.py
 custom_components/palazzetti/binary_sensor.py
 custom_components/palazzetti/config_flow.py
