@@ -67,7 +67,7 @@ async def create_input_number(hass, config_entry):
         entity_list.append(slider_fan1)
 
     # slider impostazione secondo ventilatore
-    if _config["_flag_has_fan_second"]:
+    if _config["_flag_has_fan_third"]:
         fan = 2
         data4 = {
             "id": f"{config_entry.unique_id}_fan2",
@@ -83,7 +83,7 @@ async def create_input_number(hass, config_entry):
         entity_list.append(slider_fan2)
 
     # slider impostazione terzo ventilatore
-    if _config["_flag_has_fan_third"]:
+    if _config["_flag_has_fan_second"]:
         fan = 3
         data5 = {
             "id": f"{config_entry.unique_id}_fan3",
