@@ -30,6 +30,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         entity_list.append(
             ZeroSpeed(product, "Silent", False, "mdi:fan-off", device_class="outlet")
         )
+
+    if _config["_flag_is_air"] and (_config["_flag_has_fan_mode_auto"]):
+        entity_list.append(
+            AutoSpeed(product, "Fan Auto", False, "mdi:fan-auto", device_class="outlet")
+        )
     async_add_entities(entity_list)
 
 
@@ -215,3 +220,65 @@ class ZeroSpeed(BaseSwitch):
 
     async def async_update(self):
         print(f"switch ZeroSpeed Update")
+
+class AutoSpeed(BaseSwitch):
+    """Representation of a demo switch."""
+
+    def __init__(self, product, friendly_name, state, icon, device_class=None):
+        """Initialize the Demo switch."""
+        super().__init__(product, friendly_name, state, icon, device_class)
+
+        self._key = "fanauto"
+
+        # internal variables
+        self._unique_id = "vuoto_" + self._key
+        if product and product.product_id:
+            self._unique_id = product.product_id + "_" + self._key
+
+    @property
+    def unique_id(self):
+        """Return the unique id."""
+        return self._unique_id
+
+    @property
+    def available(self) -> bool:
+        """Return True if roller and hub is available."""
+        return self._product.online
+
+    @property
+    def is_on(self):
+        """Return true if switch is on."""
+        return self._product.get_data_config_json()["_value_fan_main"] == 7
+
+    def turn_on(self, **kwargs):
+        """Turn the switch on."""
+        if not self._product.get_data_config_json()["_value_fan_main"] == 7:
+            try:
+                self._product.set_fan_auto_mode()
+                self._state = True
+                self.schedule_update_ha_state()
+            except palexcept.InvalidStateTransitionError:
+                print("Errore: non può essere acceso")
+                _LOGGER.warning("Error cannot change state")
+            except:
+                print("Errore generico")
+        else:
+            print("Errore: non può essere spento")
+            _LOGGER.warning("Error cannot change state")
+
+    def turn_off(self, **kwargs):
+        """Turn the device off."""
+        if self._product.get_data_config_json()["_value_fan_main"] == 7:
+            try:
+                self._product.set_fan(1, 1)
+                self._state = False
+                self.schedule_update_ha_state()
+            except:
+                print("Errore: non può essere spento")
+                _LOGGER.warning("Error cannot change state")
+        else:
+            print("Errore: non può essere spento")
+            _LOGGER.warning("Error cannot change state")
+
+    async def async_update(self):
+        print(f"switch AutoSpeed Update")
