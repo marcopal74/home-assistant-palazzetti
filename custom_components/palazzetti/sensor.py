@@ -177,9 +177,9 @@ class SensorX(Entity):
         return self._product.get_key(self._key)
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         """Return the device state attributes."""
-        # attributes = super().device_state_attributes
+        # attributes = super().extra_state_attributes
         attributes = {ATTR_UNIT_OF_MEASUREMENT: self._unit}
         return attributes
 
@@ -258,9 +258,9 @@ class SensorState(Entity):
         return "UNAVAILABLE"
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         """Return the device state attributes."""
-        # attributes = super().device_state_attributes
+        # attributes = super().extra_state_attributes
         _config_attrib = self._product.get_data_config_json()
         return _config_attrib
 

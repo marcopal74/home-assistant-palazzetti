@@ -143,7 +143,7 @@ class PalBinarySensor(BinarySensorEntity):
         return self._hub.product_online
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         """Return the device state attributes."""
         if not self._hub.online:
             return None
