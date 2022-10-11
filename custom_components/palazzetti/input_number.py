@@ -139,6 +139,7 @@ class MyNumber(InputNumber):
         self._id = uid
         self._product = product
         self._type = tipo
+        self.editable = True
 
     @property
     def name(self):
