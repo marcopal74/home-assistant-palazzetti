@@ -1,8 +1,8 @@
 """Platform for sensor integration."""
 from homeassistant.const import (
-    TEMP_CELSIUS,
     ATTR_UNIT_OF_MEASUREMENT,
     DEVICE_DEFAULT_NAME,
+    UnitOfTemperature,
 )
 
 from homeassistant.helpers.entity import Entity
@@ -55,7 +55,7 @@ async def async_setup_entry(hass, config_entry, add_entities):
             _config["_value_temp_main_description"],
             nome_temp,
             None,
-            TEMP_CELSIUS,
+            UnitOfTemperature.CELSIUS,
         )
     )
 
@@ -67,7 +67,7 @@ async def async_setup_entry(hass, config_entry, add_entities):
                 "SETP",
                 "Setpoint",
                 None,
-                TEMP_CELSIUS,
+                UnitOfTemperature.CELSIUS,
             )
         )
 
@@ -79,7 +79,7 @@ async def async_setup_entry(hass, config_entry, add_entities):
                 "T2",
                 "Temp. Ritorno",
                 "mdi:arrow-left-bold-outline",
-                TEMP_CELSIUS,
+                UnitOfTemperature.CELSIUS,
             )
         )
         # T1 Idro
@@ -92,7 +92,7 @@ async def async_setup_entry(hass, config_entry, add_entities):
                     _config["_value_temp_hydro_t1_description"],
                 ),
                 "mdi:arrow-right-bold",
-                TEMP_CELSIUS,
+                UnitOfTemperature.CELSIUS,
             )
         )
 
@@ -179,8 +179,12 @@ class SensorX(Entity):
     @property
     def extra_state_attributes(self):
         """Return the device state attributes."""
-        # attributes = super().extra_state_attributes
-        attributes = {ATTR_UNIT_OF_MEASUREMENT: self._unit}
+        # attributes = super().device_state_attributes
+        if self._key == "PQT":
+            attributes = {ATTR_UNIT_OF_MEASUREMENT: self._unit, "device_class":"weight","state_class": "total_increasing"}
+        else:
+            attributes = {ATTR_UNIT_OF_MEASUREMENT: self._unit}
+
         return attributes
 
     async def async_added_to_hass(self):
@@ -260,7 +264,7 @@ class SensorState(Entity):
     @property
     def extra_state_attributes(self):
         """Return the device state attributes."""
-        # attributes = super().extra_state_attributes
+        # attributes = super().device_state_attributes
         _config_attrib = self._product.get_data_config_json()
         return _config_attrib
 

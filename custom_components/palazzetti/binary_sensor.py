@@ -1,6 +1,6 @@
 from homeassistant.components.binary_sensor import (
-    DEVICE_CLASS_CONNECTIVITY,
     BinarySensorEntity,
+    BinarySensorDeviceClass,
 )
 
 from .const import DOMAIN, COMPANY
@@ -17,7 +17,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             myhub,
             "hub",
             myhub.hub_name,
-            DEVICE_CLASS_CONNECTIVITY,
+            BinarySensorDeviceClass.CONNECTIVITY,
         )
     )
 
@@ -27,7 +27,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             myhub,
             "prod",
             "Product",
-            DEVICE_CLASS_CONNECTIVITY,
+            BinarySensorDeviceClass.CONNECTIVITY,
         )
     )
 

@@ -6,6 +6,7 @@ the integration menu and set the ip of the Connection Box when asked
 """
 import logging, asyncio
 from homeassistant.core import HomeAssistant
+from homeassistant.const import Platform
 from homeassistant import exceptions
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers import config_validation as cv, entity_registry
@@ -21,10 +22,16 @@ from palazzetti_sdk_local_api import Hub
 
 _LOGGER = logging.getLogger(__name__)
 
+PLATFORMS_1: list[Platform] = [Platform.BINARY_SENSOR]
+PLATFORMS_2: list[Platform] = [Platform.SWITCH, Platform.SENSOR]
+PLATFORMS_3: list[Platform] = [Platform.COVER]
+
+PLATFORMS_U: list[Platform] = [Platform.BINARY_SENSOR, Platform.SWITCH, Platform.SENSOR, Platform.COVER]
+
 PLATFORMS_LOAD = [
-    #  "binary_sensor",
-    "switch",
-    "sensor",
+    #   "binary_sensor",
+    # "switch",
+    # "sensor",
     "input_number",
     # "climate",
     "cover",
@@ -34,8 +41,8 @@ PLATFORMS_UNLOAD = [
     "binary_sensor",
     "switch",
     "sensor",
-    # "input_number",
-    # "climate",
+    #   "input_number",
+    #   "climate",
     "cover",
 ]
 
@@ -63,7 +70,7 @@ async def async_keep_alive(hass: HomeAssistant, entry: ConfigEntry):
         else:
             print("Hub IP reachable but product offline")
             _LOGGER.warning(
-                "Hub IP %s reachable but product offline", entry.data["host"]
+                "KEEP ALIVE: Hub IP %s reachable but product offline", entry.data["host"]
             )
     else:
         print(f"Hub IP {entry.data['host']} not reachable")
@@ -119,27 +126,30 @@ async def async_create_platforms(hass: HomeAssistant, entry: ConfigEntry):
 
     await setup_platform(hass, "input_number")
 
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS_2)
+
     for component in PLATFORMS_LOAD:
         if component == "cover":
             if _config["_flag_has_door_control"]:
-                hass.async_create_task(
-                    hass.config_entries.async_forward_entry_setup(entry, component)
-                )
-        elif component == "climate":
-            if _config["_flag_has_setpoint"]:
-                hass.async_create_task(
-                    hass.config_entries.async_forward_entry_setup(entry, component)
-                )
-        elif component == "light":
-            if _config["_flag_has_light_control"]:
-                hass.async_create_task(
-                    hass.config_entries.async_forward_entry_setup(entry, component)
-                )
-        elif component == "fan":
-            if _config["_flag_has_fan"]:
-                hass.async_create_task(
-                    hass.config_entries.async_forward_entry_setup(entry, component)
-                )
+                # hass.async_create_task(
+                #     hass.config_entries.async_forward_entry_setup(entry, component)
+                # )
+                await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS_3)
+        # elif component == "climate":
+        #     if _config["_flag_has_setpoint"]:
+        #         hass.async_create_task(
+        #             hass.config_entries.async_forward_entry_setup(entry, component)
+        #         )
+        # elif component == "light":
+        #     if _config["_flag_has_light_control"]:
+        #         hass.async_create_task(
+        #             hass.config_entries.async_forward_entry_setup(entry, component)
+        #         )
+        # elif component == "fan":
+        #     if _config["_flag_has_fan"]:
+        #         hass.async_create_task(
+        #             hass.config_entries.async_forward_entry_setup(entry, component)
+        #         )
         elif component == "input_number":
             hass.async_create_task(create_input_number(hass, entry))
         else:
@@ -174,9 +184,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     await myhub.async_update(discovery=True)
 
     # setup binary_sensor for state monitoring
-    hass.async_create_task(
-        hass.config_entries.async_forward_entry_setup(entry, "binary_sensor")
-    )
+    # hass.async_create_task(
+    #     hass.config_entries.async_forward_entry_setup(entry, "binary_sensor")
+    # )
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS_1)
+
 
     if (
         (not myhub.online)
@@ -185,17 +197,17 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         or (not myhub.product.online)
     ):
         if not myhub.online:
-            print("Hub IP is unreachable or product offline")
-            _LOGGER.warning("Hub IP %s not reachable", entry.data["host"])
+            print("SETUP: Hub IP is unreachable or product offline")
+            _LOGGER.warning("SETUP: Hub IP %s not reachable", entry.data["host"])
         else:
             if (
                 (not myhub.product_online)
                 or (not myhub.product)
                 or (not myhub.product.online)
             ):
-                print("IP is reachable but product offline")
+                print("SETUP: IP is reachable but product offline")
                 _LOGGER.warning(
-                    "Hub IP %s reachable but product offline", entry.data["host"]
+                    "SETUP: Hub IP %s reachable but product offline", entry.data["host"]
                 )
         # keep alive loop until ip is reachable
         def keep_alive(event_time):
@@ -208,7 +220,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         hass.data[DOMAIN][entry.entry_id + "_listener_kalive"] = listener_kalive
         return True
 
-    print("Hub IP is reachable and product is online")
+    print("SETUP: Hub IP is reachable and product is online")
 
     # loop for get dynamic data of stove
     def update_state_datas(event_time):
@@ -268,14 +280,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Unload a config entry."""
     print("Unload all")
-    unload_ok = all(
-        await asyncio.gather(
-            *[
-                hass.config_entries.async_forward_entry_unload(entry, component)
-                for component in PLATFORMS_UNLOAD
-            ]
-        )
-    )
+    unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS_U)
+    # unload_ok = all(
+    #     await asyncio.gather(
+    #         *[
+    #             hass.config_entries.async_forward_entry_unload(entry, component)
+    #             for component in PLATFORMS_UNLOAD
+    #         ]
+    #     )
+    # )
 
     # unloads input_number entities
     await unload_input_number(hass, entry)
